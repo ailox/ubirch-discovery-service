@@ -6,7 +6,6 @@ import gremlin.scala._
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{ DateTime, DateTimeZone }
 import org.scalatest.{ FeatureSpec, Matchers }
-import org.slf4j.{ Logger, LoggerFactory }
 
 class VertexStructDbSpec extends FeatureSpec with Matchers {
 
@@ -19,8 +18,6 @@ class VertexStructDbSpec extends FeatureSpec with Matchers {
   val Created: Key[String] = Key[String]("created")
   val test: Key[String] = Key[String]("truc")
   val IdAssigned: Key[String] = Key[String]("IdAssigned")
-
-  def log: Logger = LoggerFactory.getLogger(this.getClass)
 
   def deleteDatabase(): Unit = {
     gc.g.V().drop().iterate()

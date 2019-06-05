@@ -5,13 +5,10 @@ import java.util
 import gremlin.scala.{ Key, KeyValue, TraversalSource }
 import org.apache.tinkerpop.gremlin.process.traversal.Bindings
 import org.apache.tinkerpop.gremlin.structure.Vertex
-import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.collection.JavaConverters._
 
 class VertexStructDb(val id: String, val g: TraversalSource) {
-
-  def log: Logger = LoggerFactory.getLogger(this.getClass)
 
   val Id: Key[String] = Key[String]("IdAssigned")
 

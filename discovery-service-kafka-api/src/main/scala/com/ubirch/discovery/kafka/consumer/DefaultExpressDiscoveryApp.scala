@@ -1,8 +1,8 @@
 package com.ubirch.discovery.kafka.consumer
 
 import com.ubirch.discovery.kafka.models.{ AddV, Store }
-import com.ubirch.discovery.kafka.util.Exceptions.{ ParsingException, StoreException }
 import com.ubirch.discovery.kafka.util.ErrorsHandler
+import com.ubirch.discovery.kafka.util.Exceptions.{ ParsingException, StoreException }
 import com.ubirch.kafka.express.ExpressKafkaApp
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization

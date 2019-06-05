@@ -1,17 +1,15 @@
 package com.ubirch.discovery.core.operation
 
+import com.typesafe.scalalogging.LazyLogging
 import com.ubirch.discovery.core.connector.GremlinConnector
 import com.ubirch.discovery.core.structure.VertexStruct
 import gremlin.scala._
-import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.collection.JavaConverters._
 
-class GetVertices(implicit val gc: GremlinConnector) {
+class GetVertices(implicit val gc: GremlinConnector) extends LazyLogging {
 
   private val ID = Key[String]("IdAssigned")
-
-  def log: Logger = LoggerFactory.getLogger(this.getClass)
 
   /**
     * Returns a fixed amount of (randomly selected) vertices.
@@ -22,7 +20,7 @@ class GetVertices(implicit val gc: GremlinConnector) {
 
   def getAllVertices(limit: Int = 1000000): List[VertexStruct] = {
     val listVertexes: List[Vertex] = gc.g.V().limit(limit).l() // return scala list of vertex
-    log.info(listVertexes.mkString)
+    logger.debug(listVertexes.mkString)
 
     def toVertexStructList(lVertex: List[Vertex], accu: List[VertexStruct]): List[VertexStruct] = {
       lVertex match {
