@@ -9,7 +9,6 @@ import org.apache.kafka.common.serialization
 import org.apache.kafka.common.serialization.{ Deserializer, StringDeserializer, StringSerializer }
 import org.json4s._
 
-import scala.collection.JavaConverters._
 import scala.language.postfixOps
 import scala.util.Try
 
@@ -21,7 +20,7 @@ trait DefaultExpressDiscoveryApp extends ExpressKafkaApp[String, String] {
 
   override val valueSerializer: serialization.Serializer[String] = new StringSerializer
 
-  override val consumerTopics: Set[String] = conf.getStringList("kafkaApi.kafkaProducer.topic").asScala.toSet
+  override val consumerTopics: Set[String] = conf.getString("kafkaApi.kafkaProducer.topic").split(", ").toSet
 
   val producerErrorTopic: String = conf.getString("kafkaApi.kafkaConsumer.errorTopic")
 

@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "kafka-api-{{ template "discovery-service.fullname" . }}"
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: responder-svc
+        env: {{ .Values.environment }}
+    spec:
+      serviceAccountName: ingest
+      containers:
+        - name: responder-svc
+          image: "ubirch/responder:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 9010
+          resources:
+            requests:
+              cpu: 0.5
+              memory: 0.3Gi
+            limits:
+              cpu: 1
+              memory: 0.5Gi
+          readinessProbe:
+            tcpSocket:
+              port: 9010
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9010
+            initialDelaySeconds: 20
+            periodSeconds: 60
+          env:
+            - name: DISC_ENV_KAFKA_CONS_BOOTSTRAP
+              value: STAGE_DISC_ENV_KAFKA_CONS_BOOTSTRAP
+            - name: DISC_ENV_KAFKA_CONS_TOPIC
+              value: STAGE_DISC_ENV_KAFKA_CONS_TOPIC
+            - name: DISC_ENV_KAFKA_CONS_GROUPID
+              value: STAGE_DISC_ENV_KAFKA_CONS_GROUPID
+            - name: DISC_ENV_KAFKA_CONS_ERRORTOPIC
+              value: STAGE_DISC_ENV_KAFKA_CONS_ERRORTOPIC
+            - name: DISC_ENV_KAFKA_CONS_TIMEOUT
+              value: STAGE_DISC_ENV_KAFKA_CONS_TIMEOUT
+            - name: DISC_ENV_KAFKA_CONS_POOLREC
+              value: STAGE_DISC_ENV_KAFKA_CONS_POOLREC
+            - name: DISC_ENV_KAFKA_PROD_BOOTSTRAP
+              value: STAGE_DISC_ENV_KAFKA_PROD_BOOTSTRAP
+            - name: DISC_ENV_KAFKA_PROD_ERRORTOPIC
+              value: STAGE_DISC_ENV_KAFKA_PROD_ERRORTOPIC
+            - name: DISC_ENV_KAFKA_PROD_TOPIC
+              value: STAGE_DISC_ENV_KAFKA_PROD_TOPIC
+            - name: DISC_ENV_KAFKA_PROD_TIMEOUT
+              value: STAGE_DISC_ENV_KAFKA_PROD_TIMEOUT
+            - name: DISC_ENV_KAFKA_PROMETHEUS
+              value: STAGE_DISC_ENV_KAFKA_PROMETHEUS
+            - name: DISC_ENV_CORE_HOSTS
+              value: STAGE_DISC_ENV_CORE_HOSTS
+            - name: DISC_ENV_CORE_PORT
+              value: STAGE_DISC_ENV_CORE_PORT
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
