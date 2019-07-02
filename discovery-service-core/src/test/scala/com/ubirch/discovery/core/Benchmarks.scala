@@ -58,6 +58,7 @@ class Benchmarks extends FeatureSpec with Matchers {
     //commit
     val t0 = System.nanoTime()
     AddVertices().addTwoVertices(id1.toString, p1)(id2.toString, p2)(pE)
+    val t1 = System.nanoTime()
 
     // analyse
     val v1Reconstructed = new VertexStructDb(id1.toString, gc.g)
@@ -77,11 +78,10 @@ class Benchmarks extends FeatureSpec with Matchers {
     propertiesReceived2.sortBy(x => x.key.name) shouldBe p2.sortBy(x => x.key.name)
     id1.toString shouldBe idGottenBack1
     id2.toString shouldBe idGottenBack2
-    val t1 = System.nanoTime()
 
-    val pw = new BufferedWriter(new FileWriter(fileName, true))
-    pw.write((t1 / 1000000 - t0 / 1000000).toString + System.getProperty("line.separator"))
-    pw.close()
+    //    val pw = new BufferedWriter(new FileWriter(fileName, true))
+    //    pw.write((t1 / 1000000 - t0 / 1000000).toString + System.getProperty("line.separator"))
+    //    pw.close()
     log.info("time elapsed= " + (t1 / 1000000 - t0 / 1000000).toString + "ms")
 
   }
@@ -91,19 +91,19 @@ class Benchmarks extends FeatureSpec with Matchers {
     for (_ <- 0 to 10) {
       addVertices()
     }
-    val br = new BufferedReader(new FileReader(fileName))
-    var line: String = ""
-    var sum = 0
-    var nbLines = 0
-    var stillGoing = true
-    while (stillGoing) {
-      line = br.readLine()
-      if (line != null) {
-        sum += line.toInt
-        nbLines += 1
-      } else stillGoing = false
-    }
-    log.info("average = " + (sum / nbLines).toString + "ms")
+    //    val br = new BufferedReader(new FileReader(fileName))
+    //    var line: String = ""
+    //    var sum = 0
+    //    var nbLines = 0
+    //    var stillGoing = true
+    //    while (stillGoing) {
+    //      line = br.readLine()
+    //      if (line != null) {
+    //        sum += line.toInt
+    //        nbLines += 1
+    //      } else stillGoing = false
+    //    }
+    //    log.info("average = " + (sum / nbLines).toString + "ms")
   }
 
 }

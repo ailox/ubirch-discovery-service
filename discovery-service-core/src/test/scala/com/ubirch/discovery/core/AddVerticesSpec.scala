@@ -19,7 +19,7 @@ class AddVerticesSpec extends FeatureSpec with Matchers with LazyLogging {
   implicit val gc: GremlinConnector = GremlinConnector.get
 
   def deleteDatabase(): Unit = {
-    gc.g.V().drop().iterate()
+    //gc.g.V().drop().iterate()
   }
 
   feature("add vertices - correct tests") {
