@@ -154,12 +154,13 @@ object ReproduceEnvProd extends TestBase with LazyLogging {
     val listId = List(
       Random.alphanumeric.take(32).mkString,
       Random.alphanumeric.take(32).mkString,
+      Random.alphanumeric.take(32).mkString
     )
     val initMsg = List(
       generateRequest("blockchain_ETH", listId(0))("root_tree", listId(1)), //1
-      generateRequest("root_tree", listId(1))("blockchain_IOTA", listId(2)), //2
+      generateRequest("root_tree", listId(1))("blockchain_IOTA", listId(2)) //2
     )
-    (initMsg, listId(1), listId(0))
+    (initMsg, listId(1), listId.head)
   }
 
   def generateRequest(tn1: String, k1: String)(tn2: String, k2: String): String = {

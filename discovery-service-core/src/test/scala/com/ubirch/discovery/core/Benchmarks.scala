@@ -1,16 +1,14 @@
 package com.ubirch.discovery.core
 
-import java.io._
-
 import com.ubirch.discovery.core.connector.GremlinConnector
 import com.ubirch.discovery.core.operation.AddVertices
 import com.ubirch.discovery.core.structure.VertexStructDb
-import com.ubirch.discovery.core.util.Util.{ extractValue, recompose }
+import com.ubirch.discovery.core.util.Util.{extractValue, recompose}
 import gremlin.scala._
 import org.joda.time.format.ISODateTimeFormat
-import org.joda.time.{ DateTime, DateTimeZone }
-import org.scalatest.{ FeatureSpec, Matchers }
-import org.slf4j.{ Logger, LoggerFactory }
+import org.joda.time.{DateTime, DateTimeZone}
+import org.scalatest.{FeatureSpec, Matchers}
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Random
 
@@ -35,7 +33,7 @@ class Benchmarks extends FeatureSpec with Matchers {
     gc.closeConnection()
   }
 
-  def truc(): Unit = {
+  def addVertices(): Unit = {
 
     // prepare
     val id1 = new Random().nextInt(1000000000)
@@ -91,7 +89,7 @@ class Benchmarks extends FeatureSpec with Matchers {
   scenario("add create two new vertex on an empty db, link them, verify that the result is correct") {
     gc = GremlinConnector.get
     for (_ <- 0 to 10) {
-      truc()
+      addVertices()
     }
     val br = new BufferedReader(new FileReader(fileName))
     var line: String = ""

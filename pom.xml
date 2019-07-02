@@ -337,6 +337,7 @@
     <!-- sub modules -->
     <modules>
         <module>discovery-service-kafka-api</module>
+        <module>discovery-service-lookup</module>
         <module>discovery-service-core</module>
         <module>discovery-service-rest-api</module>
         <module>discovery-service-docker-jg</module>

@@ -43,11 +43,11 @@ case class AddVertices()(implicit gc: GremlinConnector) extends LazyLogging {
     (vTo: VertexStructDb, p2: List[KeyValue[String]], l2: String)
     (pE: List[KeyValue[String]], lE: String): Unit = {
     vFrom.addVertex(p1, l1, gc.b)
-    verifVertex(vFrom, p1, l1)
+    //    verifVertex(vFrom, p1, l1)
     vTo.addVertex(p2, l2, gc.b)
-    verifVertex(vTo, p2, l2)
+    //    verifVertex(vTo, p2, l2)
     createEdge(vFrom, vTo, pE, lE)
-    verifEdge(vFrom.id, vTo.id, pE)
+    //    verifEdge(vFrom.id, vTo.id, pE)
   }
 
   /*
@@ -61,14 +61,14 @@ case class AddVertices()(implicit gc: GremlinConnector) extends LazyLogging {
     (pE: List[KeyValue[String]], lE: String): Unit = {
     if (vFrom.exist) {
       vTo.addVertex(p2, l2, gc.b)
-      verifVertex(vTo, p2, l2)
+      //      verifVertex(vTo, p2, l2)
       createEdge(vFrom, vTo, pE, lE)
-      verifEdge(vFrom.id, vTo.id, pE)
+      //      verifEdge(vFrom.id, vTo.id, pE)
     } else {
       vFrom.addVertex(p1, l1, gc.b)
-      verifVertex(vFrom, p1, l1)
+      //      verifVertex(vFrom, p1, l1)
       createEdge(vFrom, vTo, pE, lE)
-      verifEdge(vFrom.id, vTo.id, pE)
+      //      verifEdge(vFrom.id, vTo.id, pE)
     }
   }
 
@@ -110,9 +110,7 @@ case class AddVertices()(implicit gc: GremlinConnector) extends LazyLogging {
     * @return boolean. True = linked, False = not linked.
     */
   private def areVertexLinked(vFrom: VertexStructDb, vTo: VertexStructDb): Boolean = {
-    val oneWay = gc.g.V(vFrom.vertex).outE().as("e").inV.has(ID, vTo.id).select("e").toList
-    val otherWay = gc.g.V(vTo.vertex).outE().as("e").inV.has(ID, vFrom.id).select("e").toList
-    oneWay.nonEmpty || otherWay.nonEmpty
+    gc.g.V(vFrom.vertex).bothE().as("e").bothV().has(ID, vTo.id).select("e").toList().nonEmpty
   }
 
   /**

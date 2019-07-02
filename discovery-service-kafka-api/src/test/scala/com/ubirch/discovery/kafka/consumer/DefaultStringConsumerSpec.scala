@@ -17,7 +17,6 @@ class DefaultStringConsumerSpec extends TestBase {
   val errorTopic = "com.ubirch.eventlog.discovery-error"
   implicit val Deserializer: StringDeserializer = new StringDeserializer
 
-
   feature("Verifying valid requests") {
 
     def runTest(test: TestStruct): Unit = {
@@ -38,7 +37,9 @@ class DefaultStringConsumerSpec extends TestBase {
     val allTests = getAllTests("/valid/")
 
     allTests foreach { test =>
-        scenario(test.nameOfTest) { runTest(test) }
+      scenario(test.nameOfTest) {
+        runTest(test)
+      }
     }
 
   }
@@ -94,8 +95,7 @@ class DefaultStringConsumerSpec extends TestBase {
 
   }
 
-//   ------ helpers -------
-
+  //   ------ helpers -------
 
   def getDefaultEmbeddedKafkaConfig: EmbeddedKafkaConfig = {
     EmbeddedKafkaConfig(kafkaPort = 9092, zooKeeperPort = PortGiver.giveMeZookeeperPort)
@@ -127,14 +127,13 @@ class DefaultStringConsumerSpec extends TestBase {
     res map { m => TestStruct(m._1, m._2._1, m._2._2) }
   }
 
-
   /**
     * Return all the first lines of all the files in the specified directory as a List of String.
     * @param directory The directory where the files will be read.
     * @return A list of String representing all the first lines of all the files in the specified directory.
     */
   def readAllFiles(directory: String): List[String] = {
-    val listFiles = getFilesInDirectory(directory)
+    val listFiles: List[File] = getFilesInDirectory(directory)
     listFiles map { f => readFile(f.getCanonicalPath).head }
   }
 
