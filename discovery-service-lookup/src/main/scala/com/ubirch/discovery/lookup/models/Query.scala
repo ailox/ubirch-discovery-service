@@ -9,6 +9,7 @@ import scala.language.postfixOps
 object Query extends LazyLogging {
 
   val gc = GremlinConnector.get
+  val DEFAULT_EMPTY_STRING = "[]"
 
   def getV(req: GetV): Unit = {
     req.message_type match {
@@ -24,33 +25,32 @@ object Query extends LazyLogging {
     }
 
     val (passedSig, sigID) = retrieveIdFrom("signature", hash)
-    if (passedSig) {
-      val (passedFT, ftID) = retrieveIdFrom("foundation_tree", hash)
-
-      if (passedFT) {
-        val (passedRT, rtID) = retrieveIdFrom("root_tree", ftID)
-
-        val blockChainVertices = gc.g.V().has(new Key[String]("IdAssigned"), rtID).bothE().bothV().hasLabel("blockchain_IOTA").l()
-        blockChainVertices foreach { bcV =>
-          val id = gc.g.V(bcV).values("IdAssigned").l().head.asInstanceOf[String]
-          val label = gc.g.V(bcV).label().l().head
-          logger.info(s"blockchain type: $label, id: $id")
-        }
+    val (passedFT, ftID) = if (passedSig) retrieveIdFrom("foundation_tree", hash) else (false, DEFAULT_EMPTY_STRING)
+    val (passedRT, rtID) = if (passedFT) retrieveIdFrom("root_tree", ftID) else (false, DEFAULT_EMPTY_STRING)
+    val blockChains: List[(String, String)] = if (passedRT) {
+      val blockChainVertices = gc.g.V().has(new Key[String]("IdAssigned"), rtID).bothE().bothV().hasLabel("blockchain_IOTA").l()
+      blockChainVertices map { bcV =>
+        val id = gc.g.V(bcV).values("IdAssigned").l().head.asInstanceOf[String]
+        val label = gc.g.V(bcV).label().l().head
+        (label, id)
       }
-
-
+    } else {
+      List(("BlockChains", "[]"))
     }
 
+    val toPrint = List(("signature", sigID), ("foundation tree", ftID), ("root tree", rtID)) ++ blockChains
+
+    toPrint foreach { kv =>
+      logger.info(s"${kv._1} = ${kv._2}")
+    }
 
   }
 
   def retrieveIdFrom(name: String, hashUPP: String): (Boolean, String) = {
     val signatureID = gc.g.V().has(new Key[String]("IdAssigned"), hashUPP).bothE().bothV().hasLabel(name).values("IdAssigned").l().headOption.asInstanceOf[Option[String]]
     signatureID match {
-      case Some(value) => logger.info(s"$name = $value")
-        (true, value)
-      case None => logger.info(s"$name = []")
-        (false, "")
+      case Some(value) => (true, value)
+      case None => (false, "")
     }
   }
 
