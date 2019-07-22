@@ -1,7 +1,6 @@
 package com.ubirch.discovery.lookup.models
 
 import com.typesafe.scalalogging.LazyLogging
-import com.ubirch.discovery.core.connector.GremlinConnector
 import gremlin.scala.Key
 
 import scala.language.postfixOps
@@ -47,8 +46,8 @@ object Query extends LazyLogging {
   }
 
   def retrieveIdFrom(name: String, hashUPP: String): (Boolean, String) = {
-    val signatureID = gc.g.V().has(new Key[String]("IdAssigned"), hashUPP).bothE().bothV().hasLabel(name).values("IdAssigned").l().headOption.asInstanceOf[Option[String]]
-    signatureID match {
+    val vertexId = gc.g.V().has(new Key[String]("IdAssigned"), hashUPP).bothE().bothV().hasLabel(name).values("IdAssigned").l().headOption.asInstanceOf[Option[String]]
+    vertexId match {
       case Some(value) => (true, value)
       case None => (false, "")
     }
