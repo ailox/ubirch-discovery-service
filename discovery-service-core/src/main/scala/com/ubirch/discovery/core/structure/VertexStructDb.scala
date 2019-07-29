@@ -67,7 +67,7 @@ class VertexStructDb(val properties: List[KeyValue[String]], val g: TraversalSou
   }
 
   /**
-    * Returns a Map<Any, List<Any>> fo the properties. A vertex property can have a list of values, thus why
+    * Returns a Map[Any, List[Any]] for the properties. A vertex property can have a list of values, thus why
     * the method is returning this kind of structure.
     *
     * @return A map containing the properties name and respective values of the vertex contained in this structure.

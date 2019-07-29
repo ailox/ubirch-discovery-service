@@ -20,7 +20,9 @@ trait DefaultExpressLookupApp extends ExpressKafkaApp[String, String] {
 
   override val valueSerializer: serialization.Serializer[String] = new StringSerializer
 
-  override val consumerTopics: Set[String] = conf.getString("kafkaApi.kafkaProducer.topic").split(", ").toSet
+  override val consumerTopics: Set[String] = conf.getString("kafkaApi.kafkaConsumer.topic").split(", ").toSet
+
+  val producerTopic: String = "com.ubirch.eventlog.newlookup.prod" //TODO: change on final version
 
   val producerErrorTopic: String = conf.getString("kafkaApi.kafkaConsumer.errorTopic")
 
@@ -70,7 +72,9 @@ trait DefaultExpressLookupApp extends ExpressKafkaApp[String, String] {
 
   def query(data: Seq[GetV]): Boolean = {
     try {
-      data.foreach(Query.getV)
+      val t0 = System.currentTimeMillis()
+      data.foreach(gv => send(producerTopic, Query.getV(gv)))
+      logger.info("Time for querying: " + (System.currentTimeMillis() - t0).toString)
       true
     } catch {
       case e: Exception =>

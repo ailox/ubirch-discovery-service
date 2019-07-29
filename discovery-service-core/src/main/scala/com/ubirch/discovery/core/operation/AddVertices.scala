@@ -23,7 +23,9 @@ case class AddVertices()(implicit gc: GremlinConnector) extends LazyLogging {
                     (p2: List[KeyValue[String]], l2: String)
                     (pE: List[KeyValue[String]], lE: String): String = {
 
-    if (p1.sortBy(x => x.key.name) equals p2.sortBy(x => x.key.name)) throw PropertiesNotCorrect(s"p1 = ${p1.map(x => s"${x.key.name} = ${x.value}, ")} should not be equal to the properties of the second vertex")
+    if (p1.sortBy(x => x.key.name) equals p2.sortBy(x => x.key.name)) {
+      throw PropertiesNotCorrect(s"p1 = ${p1.map(x => s"${x.key.name} = ${x.value}, ")} should not be equal to the properties of the second vertex")
+    }
     val vFrom: VertexStructDb = new VertexStructDb(p1, gc.g, l1)
     val vTo: VertexStructDb = new VertexStructDb(p2, gc.g, l2)
     val t0 = System.nanoTime()
